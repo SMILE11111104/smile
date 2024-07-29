@@ -1,0 +1,14 @@
+AlertDialog.Builder builder = new AlertDialog.Builder(bai4_1.this);
+builder.setTitle("Thông báo");
+builder.setMessage("Bạn có chắc chắn muốn thực hiện hành động này?");
+builder.setPositiveButton("Có", (dialog, which) -> {
+        // Xử lý khi người dùng chọn "Có"
+	finish();
+});
+builder.setNegativeButton("Không", (dialog, which) -> {
+        // Xử lý khi người dùng chọn "Không"
+	onResume();
+});
+
+AlertDialog dialog = builder.create();
+dialog.show();
