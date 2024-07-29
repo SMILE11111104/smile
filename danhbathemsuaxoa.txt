@@ -1,0 +1,301 @@
+package com.example.taoontap1;
+
+public class DanhBa
+{
+    String ten;
+    String sdt;
+
+    public DanhBa(String sdt, String ten) {
+        this.sdt = sdt;
+        this.ten = ten;
+    }
+    public DanhBa() {
+    }
+
+    public String getTen() {
+        return ten;
+    }
+
+    public void setTen(String ten) {
+        this.ten = ten;
+    }
+
+    public String getSdt() {
+        return sdt;
+    }
+
+    public void setSdt(String sdt) {
+        this.sdt = sdt;
+    }
+}
+
+
+
+
+
+
+
+
+
+package com.example.taoontap1;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.ArrayList;
+
+public class De3 extends AppCompatActivity {
+
+    EditText ten, sdt;
+    ListView listView;
+    Button them, sua, xoa;
+    ArrayList<DanhBa> danhBaList;
+    DanhBaAdapter adapter;
+    int selectedIndex = -1;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_de3);
+
+        ten = findViewById(R.id.ten);
+        sdt = findViewById(R.id.sdt);
+        listView = findViewById(R.id.list_view);
+        them = findViewById(R.id.them);
+        sua = findViewById(R.id.sua);
+        xoa = findViewById(R.id.xoa);
+
+        danhBaList = new ArrayList<>();
+
+        // Thêm sẵn 4 người vào danh sách
+        danhBaList.add(new DanhBa("Nguyen Van A", "0123456789"));
+        danhBaList.add(new DanhBa("Le Thi B", "0987654321"));
+        danhBaList.add(new DanhBa("Tran Van C", "0222333444"));
+        danhBaList.add(new DanhBa("Pham Thi D", "0333444555"));
+
+        adapter = new DanhBaAdapter(this, danhBaList);
+        listView.setAdapter(adapter);
+
+        them.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String tenText = ten.getText().toString();
+                String sdtText = sdt.getText().toString();
+                danhBaList.add(new DanhBa(tenText, sdtText));
+                adapter.notifyDataSetChanged();
+                clearFields();
+            }
+        });
+
+        sua.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (selectedIndex != -1) {
+                    danhBaList.get(selectedIndex).setTen(ten.getText().toString());
+                    danhBaList.get(selectedIndex).setSdt(sdt.getText().toString());
+                    adapter.notifyDataSetChanged();
+                    clearFields();
+                }
+            }
+        });
+
+        xoa.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (selectedIndex != -1) {
+                    danhBaList.remove(selectedIndex);
+                    adapter.notifyDataSetChanged();
+                    clearFields();
+                }
+            }
+        });
+
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            selectedIndex = position;
+            DanhBa selectedDanhBa = danhBaList.get(position);
+            ten.setText(selectedDanhBa.getTen());
+            sdt.setText(selectedDanhBa.getSdt());
+        });
+    }
+
+    private void clearFields() {
+        ten.setText("");
+        sdt.setText("");
+        selectedIndex = -1;
+    }
+}
+
+
+
+
+
+
+package com.example.taoontap1;
+
+import android.app.Activity;
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+
+public class DanhBaAdapter extends BaseAdapter {
+    private final Context context;
+    private final ArrayList<DanhBa> list;
+
+    public DanhBaAdapter(Context context, ArrayList<DanhBa> list) {
+        this.context = context;
+        this.list = list;
+    }
+
+    @Override
+    public int getCount() {
+        return list.size();
+    }
+
+    @Override
+    public Object getItem(int i) {
+        return list.get(i);
+    }
+
+    @Override
+    public long getItemId(int i) {
+        return i;
+    }
+
+    @Override
+    public View getView(int i, View view, ViewGroup viewGroup) {
+        if (view == null) {
+            LayoutInflater infl = ((Activity) context).getLayoutInflater();
+            view = infl.inflate(R.layout.layout_listview, viewGroup, false);
+        }
+
+        TextView txtten = view.findViewById(R.id.txtten);
+        TextView txtsdt = view.findViewById(R.id.txtsdt);
+
+        DanhBa danhBa = list.get(i);
+
+        txtten.setText(danhBa.getTen());
+        txtsdt.setText(danhBa.getSdt());
+
+        return view;
+    }
+}
+
+
+
+layout_listview.xml 	layout_listview.xml	layout_listview.xml
+	
+<!-- res/layout/layout_listview.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/txtten"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tên"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/txtsdt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Số điện thoại"
+        android:textSize="14sp" />
+</LinearLayout>
+
+giaodien	giaodien	giaodien	giaodien
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".De3"
+    android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ten"/>
+
+            <EditText
+                android:id="@+id/ten"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="30dp"
+                android:hint="Ten" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SDT"
+                android:textColor="@color/black"/>
+
+            <EditText
+                android:id="@+id/sdt"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="30dp"
+                android:hint="So dien thoai" />
+        </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="DANH BA DIEN THOAI"
+        android:textSize="36dp"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:background="@color/black"/>
+
+    <ListView
+        android:id="@+id/list_view"
+        android:layout_width="420dp"
+        android:layout_height="420dp"></ListView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/them"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="30dp"
+            android:text="Them"/>
+        <Button
+            android:id="@+id/sua"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="30dp"
+            android:text="Sua"/>
+        <Button
+            android:id="@+id/xoa"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="30dp"
+            android:text="Xoa"/>
+    </LinearLayout>
+</LinearLayout>
